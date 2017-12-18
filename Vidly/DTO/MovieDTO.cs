@@ -13,6 +13,7 @@ namespace Vidly.DTO
         [Required]
         public string Name { get; set; }
         public byte GenId { get; set; }
+        public GenreDTO Gen { get; set; }
         [Required]
         public DateTime ReleaseDate { get; set; }
         [Required]

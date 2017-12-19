@@ -12,20 +12,30 @@ using Vidly.Models;
 
 namespace Vidly.Controllers.Api
 {
-    public class RentalsController : ApiController
+    public class NewRentalsController : ApiController
     {
         private ApplicationDbContext _context;
 
-        public RentalsController()
+        public NewRentalsController()
         {
             _context = new ApplicationDbContext();
         }
 
+        [HttpPost]
         public IHttpActionResult CreateNewRentals(NewRentalDTO newRental)
         {
-            var customer = _context.Customers.Single(i => i.Id == newRental.CustomerId);
+            if (newRental.MovieIds.Count == 0)
+                return BadRequest("No Movie Ids have been given.");
+
+            var customer = _context.Customers.SingleOrDefault(i => i.Id == newRental.CustomerId);
+
+            if (customer == null)
+                return BadRequest("CustomerId is not valid.");
 
             var movies = _context.Movies.Where(i => newRental.MovieIds.Contains(i.Id)).ToList();
+
+            if (movies.Count != newRental.MovieIds.Count)
+                return BadRequest("One or more MovieIds are invalid.");
 
             foreach (var movie in movies)
             {
